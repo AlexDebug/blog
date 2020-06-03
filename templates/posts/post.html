@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{single_object.title}} </h1>
+<p>{{ single_object.content }}</p>
+{% for comment in object_list %}
+<h6>{{ comment.content }}</h6>
+{% endfor %}
+{% endblock content %}

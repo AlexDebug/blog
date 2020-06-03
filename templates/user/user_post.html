@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{{ single_object.name }}
+{% for post in object_list %}
+{{ post.title }}
+{{ post.content }}
+<a href="{% url 'posts:post_detail' post.pk %}">Detalle</a>
+{% endfor %}
+{% endblock content %}
