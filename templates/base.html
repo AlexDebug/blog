@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
+    
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <link rel="stylesheet" href="{% static "boostrap/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "boostrap/bootstrap-grid.css" %}">
+    <link rel="stylesheet" href="{% static "boostrap/bootstrap-reboot.css" %}">
+   
+    <script src="{% static "boostrap/jquery.min.js"%}"></script>
+    <script src="{% static "boostrap/popper.min.js"%}"></script>
+    <script src="{% static "boostrap/bootstrap.js"%}"></script>
     <meta charset="UTF-8">
     <title>{% block title %}Blog{% endblock %}</title>
 </head>

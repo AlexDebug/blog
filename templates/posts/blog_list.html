@@ -1,18 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 {% if post_list %}
-    {% for post in post_list %}
-        <div>
-            <header>
-                <h4>{{ post.title }}</h4>
-            </header>
-            <article>
-                <p>{{ post.content }}</p>
-            </article>
-            <footer>
-            </footer>
-        </div>
-    {% endfor %}
+<div class="container">
+    <nav class="navbar fixed-top navbar-light bg-light">
+        <a class="navbar-brand" href="#">Fixed top</a>
+    </nav>
+</div>
+<div class="container" id="post_list">
+<ol>
+{% for post in post_list %}
+
+<ul>
+    <a href="{% url "posts:post_detail" post.id %}">
+    <div class="card mb-3 my_card" style="max-width: 80%;">
+        <div class="card-header bg-transparent "><h2>{{ post.title }}</h2>
+            <div class="media">
+                <img src="..." class="align-self-start mr-3" alt="...">
+                <div class="media-body">
+                  <h7 class="mt-0">{{ post.user}}</h7>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ post.content }}</post></p>
+            </div>
+        <div class="card-footer bg-transparent">{{ post.date }}</div>
+    </div>
+    </a>
+</ul>
+
+{% endfor %}
+</ol>
+</div>
 {% else %}
 <h4>No Post</h4>
 {% endif %}
