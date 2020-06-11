@@ -129,8 +129,8 @@ def dislike(request, pk):
     elif request.user in post.like.all():
         return HttpResponse(status=403)
     elif request.user in post.dislike.all():
-        post.like.remove(request.user)
+        post.dislike.remove(request.user)
     else:
-        post.like.add(request.user)
+        post.dislike.add(request.user)
 
     return redirect(reverse_lazy('posts:post'))

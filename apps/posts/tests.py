@@ -10,7 +10,9 @@ from .views import ListDetail, like, dislike
 class TestDetail(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = User(username="TestUser", email="Test@test.com", password="test")
+        cls.password = {"TestUser":"test"}
+
+        cls.user = User.objects.create_user("TestUser", "Test@test.com", "test")
         cls.post = Post(title="Test Post", content="test", user=cls.user)
         cls.comment = Comment(content="test comment", post=cls.post, user=cls.user)
 
@@ -33,10 +35,12 @@ class TestDetail(TestCase):
 class TestLike(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user1 = User(username="TestUser1", email="Test1@test.com", password="test1")
-        cls.user2 = User(username="TestUser2", email="Test2@test.com", password="test2")
-        cls.user3 = User(username="TestUser3", email="Test3@test.com", password="test3")
-        cls.user4 = User(username="TestUser4", email="Test4@test.com", password="test4")
+        cls.passwords = {"user1":"test1", "user2":"test2", "user3":"test3", "user4":"test4"}
+
+        cls.user1 = User.objects.create_user(username="TestUser1", email="Test1@test.com", password="test1")
+        cls.user2 = User.objects.create_user(username="TestUser2", email="Test2@test.com", password="test2")
+        cls.user3 = User.objects.create_user(username="TestUser3", email="Test3@test.com", password="test3")
+        cls.user4 = User.objects.create_user(username="TestUser4", email="Test4@test.com", password="test4")
         cls.post = Post(title="Test Post", content="test", user=cls.user1)
 
         cls.user1.save()
@@ -54,7 +58,8 @@ class TestLike(TestCase):
 
     def test_like_for_creator(self):
         c = Client()
-        c.login(username=self.user1.username, password=self.user1.password)
+    
+        c.login(username=self.user1.username, password=self.passwords["user1"])
 
         response = c.get(reverse_lazy('posts:like', args=['1']))
 
@@ -62,7 +67,7 @@ class TestLike(TestCase):
 
     def test_like_for_dislike(self):
         c = Client()
-        c.login(username=self.user3.username, password=self.user3.password)
+        c.login(username=self.user3.username, password=self.passwords["user3"])
 
         response = c.get(reverse_lazy('posts:like', args=['1']))
 
@@ -70,28 +75,30 @@ class TestLike(TestCase):
 
     def test_like_for_like(self):
         c = Client()
-        c.login(username=self.user2.username, password=self.user2.password)
+        c.login(username=self.user2.username, password=self.passwords["user2"])
 
         response = c.get(reverse_lazy('posts:like', args=['1']))
 
-        self.assertIn(self.user2, self.post.like.all())
+        self.assertNotIn(self.user2, self.post.like.all())
 
     def test_like_for_none(self):
         c = Client()
-        c.login(username=self.user4.username, password=self.user4.password)
+        c.login(username=self.user4.username, password=self.passwords["user4"])
 
         response = c.get(reverse_lazy('posts:like', args=['1']))
 
-        self.assertNotIn(self.user4, self.post.like.all())
+        self.assertIn(self.user4, self.post.like.all())
 
 
 class TestDislike(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user1 = User(username="TestUser1", email="Test1@test.com", password="test1")
-        cls.user2 = User(username="TestUser2", email="Test2@test.com", password="test2")
-        cls.user3 = User(username="TestUser3", email="Test3@test.com", password="test3")
-        cls.user4 = User(username="TestUser4", email="Test4@test.com", password="test4")
+        cls.passwords = {"user1":"test1", "user2":"test2", "user3":"test3", "user4":"test4"}
+
+        cls.user1 = User.objects.create_user(username="TestUser1", email="Test1@test.com", password="test1")
+        cls.user2 = User.objects.create_user(username="TestUser2", email="Test2@test.com", password="test2")
+        cls.user3 = User.objects.create_user(username="TestUser3", email="Test3@test.com", password="test3")
+        cls.user4 = User.objects.create_user(username="TestUser4", email="Test4@test.com", password="test4")
         cls.post = Post(title="Test Post", content="test", user=cls.user1)
 
         cls.user1.save()
@@ -109,32 +116,30 @@ class TestDislike(TestCase):
 
     def test_like_for_creator(self):
         c = Client()
-        c.login(username=self.user1.username, password=self.user1.password)
+        c.login(username=self.user1.username, password=self.passwords["user1"])
 
-        response = c.get(reverse_lazy('posts:like', args=['1']))
-
-        self.assertEqual(response.status_code, 404)
+        response = c.get(reverse_lazy("posts:dislike", args=["1"]))
+        self.assertEqual(response.status_code, 403)
 
     def test_like_for_dislike(self):
         c = Client()
-        c.login(username=self.user3.username, password=self.user3.password)
+        c.login(username=self.user2.username, password=self.passwords["user2"])
 
-        response = c.get(reverse_lazy('posts:like', args=['1']))
+        response = c.get(reverse_lazy("posts:dislike", args=["1"]))
 
-        self.assertIn(self.user2, self.post.like.all())
+        self.assertEqual(response.status_code, 403)
 
     def test_like_for_like(self):
         c = Client()
-        c.login(username=self.user2.username, password=self.user2.password)
+        c.login(username=self.user3.username, password=self.passwords["user3"])
 
-        response = c.get(reverse_lazy('posts:like', args=['1']))
-
-        self.assertEqual(response.status_code, 404)
+        response = c.get("/blog/1/dislike/")
+        self.assertIn(self.user3, self.post.dislike.all())
 
     def test_like_for_none(self):
         c = Client()
-        c.login(username=self.user4.username, password=self.user4.password)
+        c.login(username=self.user4.username, password=self.passwords["user4"])
 
-        response = c.get(reverse_lazy('posts:like', args=['1']))
-
-        self.assertNotIn(self.user4, self.post.like.all())
+        response = c.get(reverse_lazy("posts:dislike", args=["1"]))
+        print(response)
+        self.assertIn(self.user4, self.post.dislike.all())
