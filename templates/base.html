@@ -1,21 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% load static %}
-    
+
     <link rel="stylesheet" href="{% static "css/style.css" %}">
     <link rel="stylesheet" href="{% static "boostrap/bootstrap.css" %}">
     <link rel="stylesheet" href="{% static "boostrap/bootstrap-grid.css" %}">
     <link rel="stylesheet" href="{% static "boostrap/bootstrap-reboot.css" %}">
-   
+
     <script src="{% static "boostrap/jquery.min.js"%}"></script>
     <script src="{% static "boostrap/popper.min.js"%}"></script>
     <script src="{% static "boostrap/bootstrap.js"%}"></script>
     <meta charset="UTF-8">
     <title>{% block title %}Blog{% endblock %}</title>
 </head>
+
 <body>
-    {% block content %}
-    {% endblock %}
+    <div class="container">
+        <nav class="navbar fixed-top navbar-light bg-light">
+            <a class="navbar-brand" href="{% url "posts:post" %}">Posts</a>
+            {% if user.is_authenticated %}
+            <ul id="login-logout">
+                <li>
+                    <a href="..">AA</a>
+                </li>
+                <li>
+                    <a href="{% url "auth:logout" %}">Logout</a>
+                </li>
+            </ul>            
+            {% endif %}
+        </nav>
+    </div>
+    <div class="container" id="post_list">
+            {% block content %}
+            {% endblock %}
 </body>
+
 </html>

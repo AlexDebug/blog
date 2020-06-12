@@ -32,3 +32,17 @@ a{
     text-decoration: none !important;
     border: none;
 }
+
+#login-logout {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    width: 20%;
+}
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 13%;
+}
